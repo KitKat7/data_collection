@@ -8,7 +8,8 @@
 static double imgHeaderTime, ptcHeaderTime;
 static bool imgReceived = false, ptcReceived = false;
 
-cv::Mat imgMat;
+static cv::Mat imgMat;
+static sensor_msgs::PointCloud2 ptcData;
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg)
 {
@@ -18,6 +19,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
         imgMat =  cv_bridge::toCvShare(msg, "bgr8")->image;
 
         imgReceived = true;
+        imgHeaderTime = msg->header.stamp.toSec();
     }
     catch (cv_bridge::Exception& e)
     {
@@ -30,6 +32,11 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
 void ptcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
 {
     ROS_INFO_STREAM("ptc data received!");
+    if (!msg->fields.empty())
+    {
+        ptcReceived = true;
+        ptcHeaderTime = msg->header.stamp.toSec();
+    }
 }
 
 int main(int argc, char **argv)
@@ -41,8 +48,15 @@ int main(int argc, char **argv)
     image_transport::ImageTransport it(nh);
     image_transport::Subscriber subImg = it.subscribe("/occam/stitched_image0", 1, imageCallback);
     ros::Subscriber subPtc = nh.subscribe("/velodyne_points", 1, ptcCallback);
-    
-    ros::spin();
+   
+    while (ros::ok)
+    {
+        ros::spinOnce();
+        if (imgReceived && ptcReceived && fabs(imgHeaderTime - ptcHeaderTime) < 0.001)
+        {
+            break;
+        }
+    }
     cv::destroyWindow("view");
 
 }
