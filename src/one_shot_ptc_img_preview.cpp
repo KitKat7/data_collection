@@ -5,19 +5,14 @@
 
 #include <sensor_msgs/PointCloud2.h>
 
-static double imgHeaderTime, ptcHeaderTime;
-static bool imgReceived = false, ptcReceived = false;
-
-cv::Mat imgMat;
-
 void imageCallback(const sensor_msgs::ImageConstPtr& msg)
 {
-    ROS_INFO_STREAM("img data received!");
+    ROS_INFO_STREAM("img data received");
     try
     {
-        imgMat =  cv_bridge::toCvShare(msg, "bgr8")->image;
+        cv::imshow("view", cv_bridge::toCvShare(msg, "bgr8")->image);
+        cv::waitKey(30);
 
-        imgReceived = true;
     }
     catch (cv_bridge::Exception& e)
     {
@@ -29,7 +24,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
 
 void ptcCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
 {
-    ROS_INFO_STREAM("ptc data received!");
+    ROS_INFO_STREAM("ptc data received");
 }
 
 int main(int argc, char **argv)

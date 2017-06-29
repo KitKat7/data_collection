@@ -137,7 +137,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/data_collection_node.cpp)
 add_executable(one_shot_ptc_img src/one_shot_ptc_img.cpp)
-
+add_executable(one_shot_ptc_img_preview src/one_shot_ptc_img_preview.cpp)
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -156,6 +156,12 @@ target_link_libraries(one_shot_ptc_img
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
 )
+
+target_link_libraries(one_shot_ptc_img_preview
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+)
+
 #############
 ## Install ##
 #############
