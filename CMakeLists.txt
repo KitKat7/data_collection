@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(data_collection)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   image_transport
   cv_bridge
 )
+find_package(PCL REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -122,6 +123,8 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+include_directories(${PCL_INCLUDE_DIRS})
+
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/data_collection.cpp
@@ -155,6 +158,7 @@ add_executable(one_shot_ptc_img_preview src/one_shot_ptc_img_preview.cpp)
 target_link_libraries(one_shot_ptc_img
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
+  ${PCL_LIBRARIES}
 )
 
 target_link_libraries(one_shot_ptc_img_preview
